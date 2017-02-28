@@ -1,5 +1,5 @@
-# InfoGAN_tensorflow
-My practice about InfoGAN ([InfoGAN- Interpretable Representation Learning by Information Maximizing Generative Adversarial Nets](https://arxiv.org/abs/1606.03657)) using tensorflow.<br>
+# image_caption_tensorflow
+My practice about image-caption ([Show, Attend and Tell- Neural Image Caption Generation with Visual Attention](https://arxiv.org/abs/1502.03044)) using tensorflow.<br>
 
 ##Use
 > run 'python mnist_process.py' to create mnist samples<br>
