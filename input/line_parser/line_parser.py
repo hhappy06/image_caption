@@ -11,15 +11,18 @@ _IMAGE_SIZE_ = 256
 
 class ImageParser():
 	def parse(self, value, data_dir = ''):
-		image_id, image_name, image_symb_cap, cap_mask, image_caption = tf.decode_csv(value, [[''], [''], ['']])
+		image_id, image_name, image_symb_cap, cap_mask, image_caption = tf.decode_csv(value, [[''], [''], [''], [''], ['']])
 		if data_dir:
-			file_name = data_dir + '/' + image_name
-		png = tf.read_file(file_name)
-		print file_name
+			image_name = data_dir + '/' + image_name
+		png = tf.read_file(image_name)
+		# print file_name
 		image = tf.image.decode_png(png, channels = 3)
 		image = tf.cast(image, tf.float32)
 		resize_image = tf.image.resize_images(image, [_IMAGE_SIZE_, _IMAGE_SIZE_])
 		# image precess if necessary
+		# print 'mmmmmmmm'
+		# print image_symb_cap.get_shape()
+		# exit()
 		sentence = tf.cast(tf.string_split(image_symb_cap, ' '), tf.float32)
 		mask = tf.cast(tf.string_split(cap_mask, ' '), tf.float32)
 

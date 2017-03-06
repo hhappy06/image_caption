@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import os
 import numpy as np
 import cPickle as pickle
@@ -16,7 +17,7 @@ class Word2Vec:
 		word_count = {}
 		for sent in sentences:
 			for word in sent.lower().split(' '):
-				 word_count[w] = word_count.get(w, 0) + 1
+				 word_count[word] = word_count.get(word, 0) + 1
 
 		sorted_word_count = sorted(list(word_count.items()), key=lambda x: x[1], reverse=True) 
 		self.vocab_size = min(len(sorted_word_count), self.vocab_size)
@@ -42,13 +43,13 @@ class Word2Vec:
 		indices = np.zeros(self.max_sent_len).astype(np.int32)
 		masks = np.zeros(self.max_sent_len)
 		word_idx = np.array([self.word2idx[w] for w in sentence.lower().split(' ')])
-		indices[:len(word_idx)] = word2idx
+		indices[:len(word_idx)] = word_idx
 		masks[:len(word_idx)] = 1.0
 		return indices, masks
 
 	def indices_to_sentence(self, indices):
 		words = [self.idx2word[idx] for idx in indices]
-		if words[-1] != '.'
+		if words[-1] != '.':
 			words.append('.')
 		punctuation = np.argmax(np.array(words) == '.') + 1
 		sentence = words[:punctuation]
@@ -61,6 +62,5 @@ class Word2Vec:
 
 	def get_all_words(self):
 		return set(self.word2idx.keys())
-
 
 

@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 import numpy as np
 import tensorflow as tf
-from vggg19 import VGG19
+from model.vgg19 import VGG19
 
 # convolution/pool stride
 _CONV_KERNEL_STRIDES_ = [1, 2, 2, 1]
@@ -140,28 +140,28 @@ class ImageCaption:
 
 				if i == 0:
 					word_emb = tf.zeros([batch_size, dim_embed])
-                	weighted_context = tf.identity(vgg19_context_reshape_mean)
-                else:
-                	word_emb = tf.cond(is_train, lambda: tf.nn.embedding_lookup(embedding_dictionary, sentences[:, i-1]), lambda: word_emb)
-                	weighted_context = tf.reduce_sum(vgg19_context_reshape * tf.expand_dims(attention, 2), 1)
+					weighted_context = tf.identity(vgg19_context_reshape_mean)
+				else:
+					word_emb = tf.cond(is_train, lambda: tf.nn.embedding_lookup(embedding_dictionary, sentences[:, i-1]), lambda: word_emb)
+					weighted_context = tf.reduce_sum(vgg19_context_reshape * tf.expand_dims(attention, 2), 1)
 
-                lstm_output, lstm_state = lstm(tf.concat(1, [weighted_context, word_emb]), lstm_state)
-                feature_concate = tf.concat(1, [lstm_output, weighted_context, word_emb])
-                output0 = _construct_full_connection_layer(feature_concate, _LAST_FC_DIMENSION_, name = 'output_fc1')
-                output0 = tf.nn.tanh(output0)
-                output0 = tf.cond(tensor_trainable, lambda: tf.nn.dropout(output0, 0.5), lambda: output0)
+				lstm_output, lstm_state = lstm(tf.concat(1, [weighted_context, word_emb]), lstm_state)
+				feature_concate = tf.concat(1, [lstm_output, weighted_context, word_emb])
+				output0 = _construct_full_connection_layer(feature_concate, _LAST_FC_DIMENSION_, name = 'output_fc1')
+				output0 = tf.nn.tanh(output0)
+				output0 = tf.cond(tensor_trainable, lambda: tf.nn.dropout(output0, 0.5), lambda: output0)
 
-                output = _construct_full_connection_layer(output0, word_number)
-                prob = tf.nn.softmax(output)
+				output = _construct_full_connection_layer(output0, word_number)
+				prob = tf.nn.softmax(output)
 
-                tensor_output.append(output)
-                tensor_output_prob.append(prob)
+				tensor_output.append(output)
+				tensor_output_prob.append(prob)
 
-                max_prob_word = tf.argmax(output, 1)
-                word_emb = tf.cond(tensor_trainable, lambda: word_emb, lambda: tf.nn.embedding_lookup(emb_w, max_prob_word))          
-            	tf.get_variable_scope().reuse_variables()
+				max_prob_word = tf.argmax(output, 1)
+				word_emb = tf.cond(tensor_trainable, lambda: word_emb, lambda: tf.nn.embedding_lookup(emb_w, max_prob_word))          
+				tf.get_variable_scope().reuse_variables()
 
-          	tensor_output = tf.pack(tensor_output, axis = 1)
+			tensor_output = tf.pack(tensor_output, axis = 1)
 			tensor_output_prob = tf.pack(tensor_output_prob, axis = 1)
 
 		return tensor_output, tensor_output_prob

@@ -9,16 +9,14 @@ from loss.image_caption_loss import ImageCaptionLoss
 from train_op import train_opt
 from model.word2vec import Word2Vec
 
-_Z_DIM_ = 10
-_Z_CONT_DIM = 2
-_N_CLASS_ = 10
-
 _BATCH_SIZE_ = 64
 _EPOCH_ = 10
-_TRAINING_SET_SIZE_ = 60000
-_DATA_DIR_ = './data/mscoco/train_images'
-_CSVFILE_ = ['./data/mscoco/train_images/file_list']
-_WORD2VEC_FILE_PATH_ = ''
+_TRAINING_SET_SIZE_ = 286891
+_DATA_DIR_ = ''
+_CSVFILE_ = ['./data/mscoco/annotations/anna.csv']
+initialized_vgg_parameter_file = './vgg19_model/vgg19.npy'
+
+_WORD2VEC_FILE_PATH_ = './word2vec_table/word2vec.pickle'
 
 _OUTPUT_INFO_FREQUENCE_ = 100
 _SAVE_MODEL_FREQUENCE_ = 100
