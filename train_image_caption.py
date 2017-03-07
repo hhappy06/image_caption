@@ -12,7 +12,7 @@ from model.word2vec import Word2Vec
 _BATCH_SIZE_ = 64
 _EPOCH_ = 10
 _TRAINING_SET_SIZE_ = 286891
-_DATA_DIR_ = ''
+_DATA_DIR_ = './data/mscoco/images'
 _CSVFILE_ = ['./data/mscoco/annotations/anna.csv']
 initialized_vgg_parameter_file = './vgg19_model/vgg19.npy'
 
