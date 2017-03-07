@@ -32,7 +32,7 @@ def train():
 		# word2vec dictionary
 		word2vec = Word2Vec()
 		word2vec.load_word2vec(_WORD2VEC_FILE_PATH_)
-		init_embedding = word2vec.get_word2vec_dic()
+		init_embedding = word2vec.get_embedding_table()
 		embedding_dictionary = tf.get_variable(
 			name = 'embedding_dictionary',
 			shape = init_embedding.shape,

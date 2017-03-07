@@ -59,13 +59,16 @@ def _construct_full_connection_layer(input_layer, output_dim, stddev = 0.02, nam
 class ImageCaption:
 	def __init__(self, name = 'ImageCaption'):
 		self.name = name
+		self.momentum = _BATCH_NROM_MOMENTUM_
+		self.epsilon = _BATCH_NORM_EPSILON_
+
 
 	def inference(self, input_images, sentences, embedding_dictionary, trainable, initialized_vgg_parameter_file = None):
 		with tf.variable_scope(self.name):
 			# extract image context feature
 			tensor_trainable = tf.constant(trainable)
 			vgg19 = VGG19('vgg19')
-			vgg19_predict, vgg19_tensor_trainable, vgg19_context = vgg19.inference(input_images, tensor_trainable, initialized_vgg_parameter_file)
+			vgg19_predict, vgg19_context = vgg19.inference(input_images, tensor_trainable, initialized_vgg_parameter_file)
 
 			vgg19_context_shape = vgg19_context.get_shape().as_list()
 			batch_size = vgg19_context_shape[0]
@@ -102,6 +105,8 @@ class ImageCaption:
 			vgg19_context_flat = tf.reshape(vgg19_context_reshape, [-1, vgg19_context_dim])
 
 			max_sentence_length = sentences.get_shape().as_list()[-1]
+			print max_sentence_length
+			print 'aaaaaaaaa'
 			dim_embed = embedding_dictionary.get_shape().as_list()[-1]
 			word_number = embedding_dictionary.get_shape().as_list()[0]
 			tensor_output = []

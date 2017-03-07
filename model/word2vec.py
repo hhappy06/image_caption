@@ -26,10 +26,25 @@ class Word2Vec:
 			word, _ = sorted_word_count[idx]
 			self.idx2word.append(word)
 			self.word2idx[word] = idx
-			self.word2vec = 0.01 * np.random.randn(self.embed_dim)
+			self.word2vec[word] = 0.01 * np.random.randn(self.embed_dim)
 
 	def get_word2vec_dic(self):
 		return self.word2vec
+
+	def get_vocab_size(self):
+		return self.vocab_size
+
+	def get_embedding_dim(self):
+		return self.embed_dim
+
+	def get_embedding_table(self):
+		embedding_table = []
+		print type(self.word2vec)
+		for word in self.idx2word:
+			print self.word2vec[word]
+			exit()
+			embedding_table.append(self.word2vec[word])
+		return np.array(embedding_table)
 
 	def save_word2vec(self, path):
 		with open(path, 'w') as output2file:

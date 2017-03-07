@@ -44,9 +44,9 @@ def process_coco_data():
 	image_files = [coco.imgs[img_id]['file_name'] for img_id in image_ids]
 	# csv_filelist = pd.DataFrame({'image_id': image_ids, 'image_file': image_files, 'symbolize_sentence': symbolize_sentence, 'mask':masks, 'caption': captions})
 	# csv_filelist.to_csv(_TRAIN_ANNOTATION_FILE_)
-	with open(_TRAIN_ANNOTATION_FILE_) as output2file:
+	with open(_TRAIN_ANNOTATION_FILE_, 'w') as output2file:
 		for idx in xrange(len(image_ids)):
-			one_row = ','.join([image_ids[idx], image_files[idx], symbolize_sentence[idx], masks[idx]]) + '\n'
+			one_row = ','.join([str(image_ids[idx]), image_files[idx], symbolize_sentence[idx], masks[idx]]) + '\n'
 			output2file.write(one_row)
 
 if __name__ == '__main__':

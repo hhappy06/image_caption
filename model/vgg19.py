@@ -46,16 +46,16 @@ class VGG19:
 			self.initialized_parameter_dict = None
 
 		# input_images is a placeholder with [None, height, width, nchannels]
-		r, g, b = tf.split(3, 3, input_images)
+		r, g, b = tf.split(input_images, 3, 3)
 		# check the image size
-		whiten_images = tf.concat(3, [
+		whiten_images = tf.concat([
 			b - _VGG19_IMAGE_MEAN[0],
 			g - _VGG19_IMAGE_MEAN[1],
-			r - _VGG19_IMAGE_MEAN[2]])
+			r - _VGG19_IMAGE_MEAN[2]], 3)
 
 		with tf.variable_scope(self.name):
 			# construct VGG19 network -- convolution layer
-			conv1_1 = self._construct_conv_layer(whiten_images, 'conv1_1')
+			conv1_1 = self._construct_conv_layer(input_images, 'conv1_1')
 			conv1_2 = self._construct_conv_layer(conv1_1, 'conv1_2')
 			pool1 = self._max_pool(conv1_2, 'pool1')
 
@@ -106,7 +106,7 @@ class VGG19:
 				# print 'conv initialize from model'
 			else:
 				init_weight = tf.truncated_normal_initializer(mean = 0.0, stddev = 0.001, dtype = tf.float32)
-				init_bias = tf.zeros_initializer([conv_config[1]], dtype = tf.float32)
+				init_bias = tf.zeros_initializer(dtype = tf.float32)
 
 			filter_shape = [conv_config[0], conv_config[0], input_layer.get_shape()[3], conv_config[1]]
 			weight = tf.get_variable(
@@ -119,10 +119,6 @@ class VGG19:
 				shape = [conv_config[1]],
 				initializer = init_bias,
 				regularizer = None)
-			# weight = tf.constant(self.initialized_parameter_dict[layer_name][_WEIGHT_INDEX], name="filter")
-			# bias = tf.constant(self.initialized_parameter_dict[layer_name][_BIAS_INDEX], name="biases")
-
-			self.variable_dict[layer_name] = [weight, bias]
 
 			conv = tf.nn.conv2d(input_layer, weight, _CONV_KERNEL_STRIDES, padding = 'SAME')
 			active = tf.nn.relu(tf.nn.bias_add(conv, bias))
@@ -143,7 +139,7 @@ class VGG19:
 				init_bias = tf.constant_initializer(self.initialized_parameter_dict[layer_name][_BIAS_INDEX])
 			else:
 				init_weight = tf.truncated_normal_initializer(mean = 0.0, stddev = 0.001, dtype = tf.float32)
-				init_bias = tf.zeros_initializer([fc_config[0]], dtype = tf.float32)
+				init_bias = tf.zeros_initializer(dtype = tf.float32)
 			weight = tf.get_variable(
 				name = layer_name + '_weight',
 				shape = [input_dimension, fc_config[0]],
@@ -154,11 +150,6 @@ class VGG19:
 				shape = [fc_config[0]],
 				initializer = init_bias,
 				regularizer = None)
-
-			# weight = tf.constant(self.initialized_parameter_dict[layer_name][_WEIGHT_INDEX], name="filter")
-			# bias = tf.constant(self.initialized_parameter_dict[layer_name][_BIAS_INDEX], name="biases")
-
-			self.variable_dict[layer_name] = [weight, bias]
 
 			reshape_input = tf.reshape(input_layer, [-1, input_dimension])
 			if active:

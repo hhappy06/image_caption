@@ -16,6 +16,9 @@ class ImageParser():
 			image_name = data_dir + '/' + image_name
 		png = tf.read_file(image_name)
 		# print file_name
+		image_symb_cap = tf.reshape(image_symb_cap, [1])
+		cap_mask = tf.reshape(cap_mask, [1])
+
 		image = tf.image.decode_png(png, channels = 3)
 		image = tf.cast(image, tf.float32)
 		resize_image = tf.image.resize_images(image, [_IMAGE_SIZE_, _IMAGE_SIZE_])
